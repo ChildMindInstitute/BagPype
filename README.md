@@ -8,5 +8,5 @@ Directions
 4) Set directory to BagPype folder that houses the pipeline 
 5) Run bagype_run.py 
 Example: 
- $ cd /Users/Jacob/Bagpype
- $ python3 bagpype_run.py
+$ cd /Users/Jacob/Bagpype
+$ python3 bagpype_run.py
