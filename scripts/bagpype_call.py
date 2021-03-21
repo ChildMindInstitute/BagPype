@@ -349,7 +349,7 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         #___________________________________________________________________________________________________________________________________
         #parallel call 
         tstart = time()
-        pcall = 'bash ' + params['pype_path'] + '/BagPype/bagpype_bash_parallel.sh %s' % batch
+        pcall = 'bash ' + params['pype_path'] + '/BagPype/scripts/bagpype_bash_parallel.sh %s' % batch
         subprocess.check_call(pcall, shell=True); tend = time(); print('Time to run %s bootstraps: ' % n_straps, tend-tstart)
         #___________________________________________________________________________________________________________________________________
         #Bagging 
@@ -385,7 +385,7 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         #___________________________________________________________________________________________________________________________________
         #parallel call 
         tstart = time()
-        pcall = 'bash ' + params['pype_path'] + '/BagPype/bagpype_bash_parallel.sh %s' % batch
+        pcall = 'bash ' + params['pype_path'] + '/BagPype/scripts/bagpype_bash_parallel.sh %s' % batch
         subprocess.check_call(pcall, shell=True); tend = time(); print('Time to run %s bootstraps: ' % n_straps, tend-tstart)
         #___________________________________________________________________________________________________________________________________
         #Bagging 
