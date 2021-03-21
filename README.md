@@ -1,5 +1,5 @@
 # BagPype
-Bagging Enhanced Network Analysis 
+Bagging Enhanced Network Analysis Clustering
 
 Directions
 1) Install dependencies found in bagpype_libraries.py
