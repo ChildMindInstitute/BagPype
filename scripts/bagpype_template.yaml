@@ -1,6 +1,6 @@
 #<><><><><> BagPype Parameters Template <><><><><>#
 # path to BagPype pipeline (no quotes)
-pype_path: /Users/Jacob
+pype_path: /Users/Jacob/Desktop/Github
 # path to data (no quotes)
 data_path: /Users/Jacob/Test_Folder
 # Batch: name of data minus the .csv (keep in quotes) 
