@@ -21,5 +21,5 @@ ID: 'prolific_academic_id'
 Boot: 'Yes'
 # n_straps = number of bootstrapped samples (n_straps need to be 50 or higher)
 n_straps: 50
-#parellel processing cores (use 1 for no paraellel processing)
+# parellel processing cors (use 1 for no paraellel processing)
 cors: 4
