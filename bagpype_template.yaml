@@ -1,0 +1,25 @@
+#<><><><><> BagPype Parameters Template <><><><><>#
+# path to BagPype pipeline (no quotes)
+pype_path: /Users/Jacob
+# path to data (no quotes)
+data_path: /Users/Jacob/Test_Folder
+# Batch: name of data minus the .csv (keep in quotes) 
+# To run multiple datsets include dataset names in brackets and seperated by a comma(s)
+# example > batch: ['comb_parent_uk_nov_res', 'comb_parent_uk_nov_res'] 
+batch: ['comb_parent_uk_nov_res', 'comb_parent_us_nov_res']
+# louvain_metric: distance metric -> options: spearman, euclid
+louvain_metric: 'spearman'
+# silo_metric = sklearn.metrics.silhouette_score 
+# see link > https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html
+silo_metric: 'correlation'
+# ID: Subject ID
+ID: 'prolific_academic_id'
+# Boot: 
+# - 'Yes' > Runs bootstrapping version of louvain only
+# - 'No' > No bootstrapping and runs only once on full dataset
+# - 'Both' > Runs both bootstrapping and non-bootstrapping
+Boot: 'Yes'
+# n_straps = number of bootstrapped samples (n_straps need to be 50 or higher)
+n_straps: 50
+#parellel processing cores (use 1 for no paraellel processing)
+cors: 4
