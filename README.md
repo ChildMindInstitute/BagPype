@@ -2,6 +2,7 @@
 Bagging Enhanced Network Analysis Clustering
 
 Directions
+----------
 1) Install dependencies found in bagpype_libraries.py
 2) Set pipeline parameters in bagpype_parameters.yaml
 3) Open terminal
