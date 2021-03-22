@@ -1,5 +1,5 @@
 # BagPype
-Bagging Enhanced Network Analysis Clustering
+Bagging Enhanced Network Analysis Clustering Pipeline
 
 Directions
 ----------
