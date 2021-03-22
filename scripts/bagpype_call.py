@@ -335,7 +335,7 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         #___________________________________________________________________________________________________________________________________
         # bootstrapping
         for i in range(n_straps):
-            random_state = np.random.RandomState(); b_idx[i] = random_state.randint(0, high= n + 1, size=n)
+            random_state = np.random.RandomState(); b_idx[i] = random_state.randint(0, high= n - 1, size=n)
         b_idx = b_idx.astype(np.int); y_boot = np.zeros(b_idx.shape)
         for i in range(b_idx.shape[0]):
             y_boot[i] = y[b_idx[i]]
@@ -371,7 +371,7 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         #___________________________________________________________________________________________________________________________________
         # bootstrapping
         for i in range(n_straps):
-            random_state = np.random.RandomState(); b_idx[i] = random_state.randint(0, high= n + 1, size=n)
+            random_state = np.random.RandomState(); b_idx[i] = random_state.randint(0, high= n - 1, size=n)
         b_idx = b_idx.astype(np.int); y_boot = np.zeros(b_idx.shape)
         for i in range(b_idx.shape[0]):
             y_boot[i] = y[b_idx[i]]

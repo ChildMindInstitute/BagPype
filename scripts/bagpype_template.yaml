@@ -2,7 +2,7 @@
 # path to BagPype pipeline (no quotes)
 pype_path: /Users/Jacob/Desktop/Github
 # path to data (no quotes)
-data_path: /Users/Jacob/Test_Folder
+data_path: /Users/Jacob/Desktop/Github/CRISIS_Follow_Up/Data/Combined_Ress
 # Batch: name of data minus the .csv (keep in quotes) 
 # To run multiple datsets include dataset names in brackets and seperated by a comma(s)
 # example > batch: ['comb_parent_uk_nov_res', 'comb_parent_uk_nov_res'] 
