@@ -49,9 +49,13 @@ def outer_equal(x):
 
 def hadamard(nearest):
     """
-    Transform data into Hadamard distance matrix
+    This function converts a directed adjacency matrix to a matrix of Hadamard distances
+    based on the overlap of neighbors. The implementation is efficiently based
+    on matrix multiplications.
+    A an N-by-N adjacency matrix holding TRUE or 1 values for edges an N-by-N matrix with
+    the Hadamard coefficient of neighbor overlap.
     """
-    
+
     common = nearest.T @ nearest
     ranks = np.outer(np.diag(common), np.ones(nearest.shape[0]))
     neighborUnion = ranks + ranks.T - common
@@ -113,7 +117,18 @@ def find_neighbors(D, k):
 
 def modularity(G, C):
     """
-    Calculate graph's modularity
+     Modularity is defined as code{Q=1/m * sum_(i,j) (Aij-ki*kj/m)*delta(ci,cj)},
+     where m is the sum of all edges, ki is the rank of node i, ci is the cluster
+     assignment of node i, and delta is the delta dunction.
+     
+     The implementation here only uses matrix multiplications and is quite efficient.
+     However, when checking the changes in the modularity it is more efficient to use
+     \code{deltaModularity}
+     
+     G a symmetric N-by-N numeric matrix representing the weights of edges between the N
+     nodes
+     C a vector or factor of length N with numeric or factor assignments
+     A numeric value of the the modularity
     """
     
     m = np.sum(G)
@@ -126,9 +141,19 @@ def modularity(G, C):
 
 def delta_modularity(G, C, i, m, Kj, newC=None):
     """
-    Calculate change in modularity by adding a node to a cluster or by removing it
+    Calculates the change in modularity by adding or removing a node to a cluster
+    G a symmetric N-by-N numeric matrix representing the weights of edges between the N
+    nodes C a vector of length N with numeric cluster assignments i the index (or name in
+    C) indicating which node is to be removed or added newC the new assignment for node i.
+    If NULL (default) calculates the change from removing i from its current assignment m
+    the sum of all the edge weights in the network. By default the value will be
+    calculated. It is more efficient to provide the value if looping over many nodes. Kj
+    the ranks of all nodes in G. By default the value will be calculated, but it is more
+    efficient to provide the value if looping over many nodes. If newC==NULL, the change in
+    modularity from removing node i from its current assignment. If newC is another factor,
+    the change in modularity by adding node i to the newC class, without calculating the
+    change due to the removal from its current class (this is done for efficiency)
     """
-    
     c = np.copy(C)
     
     if newC is None: # removing a node from C
@@ -149,7 +174,17 @@ def delta_modularity(G, C, i, m, Kj, newC=None):
 
 def louvain_step(G, C, O, Q=None):
     """
-    Run a single step of the Louvain algorithm
+    In each step each node in the network is moved to a neighboring cluster (or moved to a
+    new cluster including only itself) if it increases the modularity.
+    G a symmetric N-by-N numeric matrix representing the weights of edges between the N
+    nodes.
+    C a numeric vector of length N with cluster assignments.
+    O a vecotor indicating the order by which the nodes are evaluated.
+    Q the initial modularity value, since the method evaluates only the.
+    change in modularity so as not to calculate the modularity each time.
+    If no initial value is provided, the current modularity value is calculated.
+    Returns a list containing the a vector of length N (clusters) with cluster assignments
+    that maximizes modularity, and the new modularity (newQ).
     """
     
     if not Q:
@@ -181,7 +216,14 @@ def louvain_step(G, C, O, Q=None):
 
 def louvain(G, C, maxreps=100):
     """
-    Run Louvain algorithm
+     Implementation of the Louvain method for local maximization of modularity.
+     G a symmetric N-by-N numeric matrix representing the weights of edges between the N
+     nodes.
+     C a vector of length N with the initial numeric cluster assignments.
+     maxreps a numeric value indicating the maximal number of iteration in the Louvain
+     algorithm (default=100).
+    Returns a list containing the a vector of length N (clusters) with cluster assignments
+    that maximizes modularity, and the new modularity (newQ).
     """
     
     assert np.allclose(G, G.T), 'Input graph must be symmetric'
