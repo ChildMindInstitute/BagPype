@@ -8,6 +8,7 @@ outfolder= batch_path+'/'+batch_name
 n_straps = params['n_straps']
 louvain_metric = params['louvain_metric']
 silo_metric = params['silo_metric']
+k = params['k']
             
 df = pd.read_csv(f'{outfolder}/Data/temp.csv')
 df = df.rename(columns={'Unnamed: 0': 'Key'})
@@ -18,7 +19,7 @@ X_split = df.iloc[b_idx[i],:]
 
 #Run louvain
 print('Lacing up bootstrap #%d' % (i + 1))
-communities2, Q2 = pheno_clust(X=np.array(X_split[subset]), verbose=True, distance = louvain_metric)
+communities2, Q2 = pheno_clust(X=np.array(X_split[subset]), verbose=True, distance = louvain_metric, k=k)
 # silouette score
 score = silhouette_score(np.array(X_split[subset]), communities2, metric = silo_metric) 
 

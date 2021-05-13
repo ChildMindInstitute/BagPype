@@ -15,6 +15,7 @@ for i in params['batch']:
             ID = params['ID'] , 
             Boot = params['Boot'] , 
             louvain_metric = params['louvain_metric'], 
-            silo_metric = params['silo_metric']) 
+            silo_metric = params['silo_metric'],
+            k = params['k']) 
     
     

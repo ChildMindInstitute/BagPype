@@ -111,6 +111,7 @@ def find_neighbors(D, k):
     nearest = np.zeros(D.shape)
     for i in range(nearest.shape[1]):
         nearest[:,i] = np.round(D[:,i]) <= bottomMin(np.round(D[:,i]), k)
+   
     
     return nearest
 
@@ -257,7 +258,7 @@ def louvain(G, C, maxreps=100):
             
     return C, Q
         
-def pheno_clust(filepath=None, subset=None, X=None, outfile=None, repeats=50, verbose=True, distance=None):
+def pheno_clust(filepath=None, subset=None, X=None, outfile=None, repeats=50, verbose=True, distance=None, k = None):
     """
     Run entire phenoClust pipeline:                                                                     
     This method clusters sample data using a two-step approach. In the first step it converts the high dimensional data into a knn-nearest neighbor graph, 
@@ -290,7 +291,11 @@ def pheno_clust(filepath=None, subset=None, X=None, outfile=None, repeats=50, ve
     D = np.round((X_Z.shape[1]**3 - X_Z.shape[1]) * (1 - D) / 6).astype(np.int)
     
     b = np.ceil(np.log2(X_Z.shape[0]) + 1)
-    k = np.ceil(X_Z.shape[0] / b).astype(np.int)
+    
+    if k is None:
+        k = np.ceil(X_Z.shape[0] / b).astype(np.int)
+    else: 
+        k = k 
     nearest = find_neighbors(D, k + 1)
     G = hadamard(nearest)
     C = np.arange(G.shape[1]) + 1
@@ -350,13 +355,13 @@ def bagging_adjacency_matrixes(csv_folder, split, data_frame_path, out_dir, out_
     # create dataframe of Split 1 Subtypes 
     subs = pd.concat([columnsNamesArr.reset_index(drop=True), Subtypes], axis=1); subs.columns = ['Key', 'Subtype', 'Q']
     # read in Split 1 dataframe 
-    df = pd.read_csv(data_frame_path); df = df.rename(columns={'Unnamed: 0': 'Key'})
+    df = pd.read_csv(data_frame_path);  df['Unnamed: 0'] = range(1, df.shape[0] + 1); df = df.rename(columns={'Unnamed: 0': 'Key'})
     # create Split 1 
     Split_1 = pd.merge(subs, df, on='Key'); Split_1.to_csv(out_dir); stab_full.to_csv(out_dir_stab)
     return stab_full, Split_1, Q
 
 
-def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None, silo_metric=None):
+def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None, silo_metric=None, k=None):
     #______________________________________________________________________________________________________________
     # set up 
     batch = batch; df1 = pd.read_csv(path); silo_metric=silo_metric
@@ -364,16 +369,24 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
     if Boot == 'No': 
         os.system(f'mkdir {outfolder}/Output/'); os.system(f'mkdir {outfolder}/Output/Results/'); os.system(f'mkdir {outfolder}/Output/Results/NonBoot')
         #___________________________________________________________________________________________________________________________________
-        df1 = df1.drop(['Unnamed: 0'], axis=1); subset = df1.columns[df1.columns != ID]; y = np.array(df1[ID],dtype='str') 
-        communities, Q = pheno_clust(X=np.array(df1[subset]).astype(np.float64), verbose=False, distance = louvain_metric)
+        #df1 = df1.drop(['Unnamed: 0'], axis=1)
+        subset = df1.columns[df1.columns != ID]; y = np.array(df1[ID],dtype='str') 
+        communities, Q = pheno_clust(X=np.array(df1[subset]).astype(np.float64), verbose=False, distance = louvain_metric, k = k)
         score = silhouette_score(np.array(df1[subset]), communities, metric = silo_metric) 
         df2 = {ID:y,'Subtype':communities}; df2 =pd.DataFrame(df2); df2.loc[:, 'Q'] = Q; df2.loc[:, 'Silo'] = score
         df2 = pd.merge(df2, df1, on = ID); df2.to_csv(f'{outfolder}/Output/Results/NonBoot/NonBoot_{batch}_Full_Subtypes.csv'); print(Q)
         #___________________________________________________________________________________________________________________________________
     
     if Boot == 'Both':
-        df1 = df1.drop([ID], axis=1); df1 = df1.rename(columns={'Unnamed: 0': 'Key'}); subset = df1.columns[df1.columns != 'Key']
-        df = df1[subset]; y = np.array(df1['Key'],dtype='str'); n_straps = n_straps; n = df.shape[0]; b_idx = np.zeros((n_straps, n))
+        df1 = df1.drop([ID], axis=1)
+        df1['Unnamed: 0'] = range(1, df1.shape[0] + 1)
+        df1 = df1.rename(columns={'Unnamed: 0': 'Key'})
+        subset = df1.columns[df1.columns != 'Key']
+        df = df1[subset]
+        y = np.array(df1['Key'],dtype='str')
+        n_straps = n_straps
+        n = df.shape[0]
+        b_idx = np.zeros((n_straps, n))
         #___________________________________________________________________________________________________________________________________
         # bootstrapping
         for i in range(n_straps):
@@ -408,8 +421,15 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         df2 = pd.merge(df2, df1, on = ID); df2.to_csv(f'{outfolder}/Output/Results/NonBoot/NonBoot_{batch}_Full_Subtypes.csv'); print(Q)       
         
     if Boot == 'Yes':
-        df1 = df1.drop([ID], axis=1); df1 = df1.rename(columns={'Unnamed: 0': 'Key'}); subset = df1.columns[df1.columns != 'Key']
-        df = df1[subset]; y = np.array(df1['Key'],dtype='str'); n_straps = n_straps; n = df.shape[0]; b_idx = np.zeros((n_straps, n))
+        df1 = df1.drop([ID], axis=1)
+        df1['Unnamed: 0'] = range(1, df1.shape[0] + 1)
+        df1 = df1.rename(columns={'Unnamed: 0': 'Key'})
+        subset = df1.columns[df1.columns != 'Key']
+        df = df1[subset]
+        y = np.array(df1['Key'],dtype='str')
+        n_straps = n_straps
+        n = df.shape[0]
+        b_idx = np.zeros((n_straps, n))
         #___________________________________________________________________________________________________________________________________
         # bootstrapping
         for i in range(n_straps):
