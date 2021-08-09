@@ -1,0 +1,3 @@
+include scripts/*.py
+include scripts/*.sh
+include scripts/*.yaml
