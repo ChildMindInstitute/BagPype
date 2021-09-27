@@ -351,32 +351,50 @@ def bagging_adjacency_matrixes(csv_folder, split, data_frame_path, out_dir, out_
     graph = Graph.Weighted_Adjacency(stab_full.values.tolist(), mode=ADJ_UNDIRECTED, attr="weight")
     Louvain = graph.community_multilevel(weights=graph.es['weight'])
     #Louvain.membership 
-    Q = graph.modularity(Louvain, weights=graph.es['weight']); print(Q)
+    Q = graph.modularity(Louvain, weights=graph.es['weight'])
+    print(Q)
     # Create dataframe of Subtypes for Split 1 
-    Subtypes = pd.DataFrame(Louvain.membership); Subtypes = Subtypes + 1; Subtypes.loc[:, 'Q'] = Q
+    Subtypes = pd.DataFrame(Louvain.membership)
+    Subtypes = Subtypes + 1
+    Subtypes.loc[:, 'Q'] = Q
     # create dataframe of Split 1 Subtypes 
-    subs = pd.concat([columnsNamesArr.reset_index(drop=True), Subtypes], axis=1); subs.columns = ['Key', 'Subtype', 'Q']
+    subs = pd.concat([columnsNamesArr.reset_index(drop=True), Subtypes], axis=1)
+    subs.columns = ['Key', 'Subtype', 'Q']
     # read in Split 1 dataframe 
-    df = pd.read_csv(data_frame_path);  df['Unnamed: 0'] = range(1, df.shape[0] + 1); df = df.rename(columns={'Unnamed: 0': 'Key'})
+    df = pd.read_csv(data_frame_path)
+    df['Unnamed: 0'] = range(1, df.shape[0] + 1)
+    df = df.rename(columns={'Unnamed: 0': 'Key'})
     # create Split 1 
-    Split_1 = pd.merge(subs, df, on='Key'); Split_1.to_csv(out_dir); stab_full.to_csv(out_dir_stab)
+    Split_1 = pd.merge(subs, df, on='Key')
+    Split_1.to_csv(out_dir)
+    stab_full.to_csv(out_dir_stab)
     return stab_full, Split_1, Q
 
 
 def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None, silo_metric=None, k=None):
     #______________________________________________________________________________________________________________
     # set up 
-    batch = batch; df1 = pd.read_csv(path); silo_metric=silo_metric
+    batch = batch
+    df1 = pd.read_csv(path)
+    silo_metric=silo_metric
     #df1['Key'] = list(range(len(df1))) 
     if Boot == 'No': 
-        os.system(f'mkdir {outfolder}/Output/'); os.system(f'mkdir {outfolder}/Output/Results/'); os.system(f'mkdir {outfolder}/Output/Results/NonBoot')
+        os.system(f'mkdir {outfolder}/Output/')
+        os.system(f'mkdir {outfolder}/Output/Results/')
+        os.system(f'mkdir {outfolder}/Output/Results/NonBoot')
         #___________________________________________________________________________________________________________________________________
         #df1 = df1.drop(['Unnamed: 0'], axis=1)
-        subset = df1.columns[df1.columns != ID]; y = np.array(df1[ID],dtype='str') 
+        subset = df1.columns[df1.columns != ID]
+        y = np.array(df1[ID],dtype='str')
         communities, Q = pheno_clust(X=np.array(df1[subset]).astype(np.float64), verbose=False, distance = louvain_metric, k = k)
-        score = silhouette_score(np.array(df1[subset]), communities, metric = silo_metric) 
-        df2 = {ID:y,'Subtype':communities}; df2 =pd.DataFrame(df2); df2.loc[:, 'Q'] = Q; df2.loc[:, 'Silo'] = score
-        df2 = pd.merge(df2, df1, on = ID); df2.to_csv(f'{outfolder}/Output/Results/NonBoot/NonBoot_{batch}_Full_Subtypes.csv'); print(Q)
+        #score = silhouette_score(np.array(df1[subset]), communities, metric = silo_metric)
+        df2 = {ID:y,'Subtype':communities}
+        df2 =pd.DataFrame(df2)
+        df2.loc[:, 'Q'] = Q
+        #df2.loc[:, 'Silo'] = score
+        df2 = pd.merge(df2, df1, on = ID)
+        df2.to_csv(f'{outfolder}/Output/Results/NonBoot/NonBoot_{batch}_Full_Subtypes.csv')
+        print(Q)
         #___________________________________________________________________________________________________________________________________
     
     if Boot == 'Both':
@@ -392,35 +410,57 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         #___________________________________________________________________________________________________________________________________
         # bootstrapping
         for i in range(n_straps):
-            random_state = np.random.RandomState(); b_idx[i] = random_state.randint(0, high= n - 1, size=n)
-        b_idx = b_idx.astype(np.int); y_boot = np.zeros(b_idx.shape)
+            random_state = np.random.RandomState()
+            b_idx[i] = random_state.randint(0, high= n - 1, size=n)
+        b_idx = b_idx.astype(np.int)
+        y_boot = np.zeros(b_idx.shape)
         for i in range(b_idx.shape[0]):
             y_boot[i] = y[b_idx[i]]
         #___________________________________________________________________________________________________________________________________
         #create directories
-        os.system(f'mkdir {outfolder}/Data/'); os.system(f'mkdir {outfolder}/Output/'); os.system(f'mkdir {outfolder}/Output/Results/')
-        os.system(f'mkdir {outfolder}/Output/Results/Boot'); os.system(f'mkdir {outfolder}/Output/Results/Boot_Q'); os.system(f'mkdir {outfolder}/Output/Results/Boot_Silo')  
+        os.system(f'mkdir {outfolder}/Data/')
+        os.system(f'mkdir {outfolder}/Output/')
+        os.system(f'mkdir {outfolder}/Output/Results/')
+        os.system(f'mkdir {outfolder}/Output/Results/Boot')
+        os.system(f'mkdir {outfolder}/Output/Results/Boot_Q')
+        os.system(f'mkdir {outfolder}/Output/Results/Boot_Silo')
         #save data 
-        df.to_csv(f'{outfolder}/Data/temp.csv'); np.save(f'{outfolder}/Output/Results/y_boot.npy',y_boot); np.save(f'{outfolder}/Output/Results/b_idx.npy',b_idx)
-        temp_txtfile = np.arange(0,n_straps,1).astype(str); np.savetxt(f'{outfolder}/Output/Results/temp_txtfile.txt', temp_txtfile,fmt='%s')
+        df.to_csv(f'{outfolder}/Data/temp.csv')
+        np.save(f'{outfolder}/Output/Results/y_boot.npy',y_boot)
+        np.save(f'{outfolder}/Output/Results/b_idx.npy',b_idx)
+        temp_txtfile = np.arange(0,n_straps,1).astype(str)
+        np.savetxt(f'{outfolder}/Output/Results/temp_txtfile.txt', temp_txtfile,fmt='%s')
         #___________________________________________________________________________________________________________________________________
         #parallel call 
         tstart = time()
         pcall = 'bash ' + params['pype_path'] + '/BagPype/scripts/bagpype_bash_parallel.sh %s' % batch
-        subprocess.check_call(pcall, shell=True); tend = time(); print('Time to run %s bootstraps: ' % n_straps, tend-tstart)
+        subprocess.check_call(pcall, shell=True)
+        tend = time()
+        print('Time to run %s bootstraps: ' % n_straps, tend-tstart)
         #___________________________________________________________________________________________________________________________________
         #Bagging 
-        csv_folder = f'{outfolder}/Output/Results/Boot/'; split = batch; data_frame_path = path
-        out_dir = f'{outfolder}/Output/Results/{batch}_Full_Subtypes.csv'; out_dir_stab = f'{outfolder}/Output/Results/{batch}_Full_Stab.csv'
+        csv_folder = f'{outfolder}/Output/Results/Boot/'
+        split = batch
+        data_frame_path = path
+        out_dir = f'{outfolder}/Output/Results/{batch}_Full_Subtypes.csv'
+        out_dir_stab = f'{outfolder}/Output/Results/{batch}_Full_Stab.csv'
         stab_full, Split_1, Q = bagging_adjacency_matrixes(csv_folder, split, data_frame_path, out_dir, out_dir_stab, subset, silo_metric)
         #___________________________________________________________________________________________________________________________________  
         os.system(f'mkdir {outfolder}/Output/Results/NonBoot')
         #___________________________________________________________________________________________________________________________________   
-        df1 = pd.read_csv(path); df1 = df1.drop(['Unnamed: 0'], axis=1); subset = df1.columns[df1.columns != ID]; y = np.array(df1[ID],dtype='str') 
+        df1 = pd.read_csv(path)
+        df1 = df1.drop(['Unnamed: 0'], axis=1)
+        subset = df1.columns[df1.columns != ID]
+        y = np.array(df1[ID],dtype='str')
         communities, Q = pheno_clust(X=np.array(df1[subset]).astype(np.float64), verbose=False, distance = louvain_metric)
-        score = silhouette_score(np.array(df1[subset]), communities, metric = silo_metric) 
-        df2 = {ID:y,'Subtype':communities}; df2 =pd.DataFrame(df2); df2.loc[:, 'Q'] = Q; df2.loc[:, 'Silo'] = score
-        df2 = pd.merge(df2, df1, on = ID); df2.to_csv(f'{outfolder}/Output/Results/NonBoot/NonBoot_{batch}_Full_Subtypes.csv'); print(Q)       
+        #score = silhouette_score(np.array(df1[subset]), communities, metric = silo_metric)
+        df2 = {ID:y,'Subtype':communities}
+        df2 =pd.DataFrame(df2)
+        df2.loc[:, 'Q'] = Q
+        #df2.loc[:, 'Silo'] = score
+        df2 = pd.merge(df2, df1, on = ID)
+        df2.to_csv(f'{outfolder}/Output/Results/NonBoot/NonBoot_{batch}_Full_Subtypes.csv')
+        print(Q)
         
     if Boot == 'Yes':
         df1 = df1.drop([ID], axis=1)
@@ -435,26 +475,40 @@ def bagpype(outfolder, batch, path, n_straps, ID, Boot=None, louvain_metric=None
         #___________________________________________________________________________________________________________________________________
         # bootstrapping
         for i in range(n_straps):
-            random_state = np.random.RandomState(); b_idx[i] = random_state.randint(0, high= n - 1, size=n)
-        b_idx = b_idx.astype(np.int); y_boot = np.zeros(b_idx.shape)
+            random_state = np.random.RandomState()
+            b_idx[i] = random_state.randint(0, high= n - 1, size=n)
+        b_idx = b_idx.astype(np.int)
+        y_boot = np.zeros(b_idx.shape)
         for i in range(b_idx.shape[0]):
             y_boot[i] = y[b_idx[i]]
         #___________________________________________________________________________________________________________________________________
         #create directories
-        os.system(f'mkdir {outfolder}/Data/'); os.system(f'mkdir {outfolder}/Output/'); os.system(f'mkdir {outfolder}/Output/Results/')
-        os.system(f'mkdir {outfolder}/Output/Results/Boot'); os.system(f'mkdir {outfolder}/Output/Results/Boot_Q'); os.system(f'mkdir {outfolder}/Output/Results/Boot_Silo')  
+        os.system(f'mkdir {outfolder}/Data/')
+        os.system(f'mkdir {outfolder}/Output/')
+        os.system(f'mkdir {outfolder}/Output/Results/')
+        os.system(f'mkdir {outfolder}/Output/Results/Boot')
+        os.system(f'mkdir {outfolder}/Output/Results/Boot_Q')
+        os.system(f'mkdir {outfolder}/Output/Results/Boot_Silo')
         #save data 
-        df.to_csv(f'{outfolder}/Data/temp.csv'); np.save(f'{outfolder}/Output/Results/y_boot.npy',y_boot); np.save(f'{outfolder}/Output/Results/b_idx.npy',b_idx)
-        temp_txtfile = np.arange(0,n_straps,1).astype(str); np.savetxt(f'{outfolder}/Output/Results/temp_txtfile.txt', temp_txtfile,fmt='%s')
+        df.to_csv(f'{outfolder}/Data/temp.csv')
+        np.save(f'{outfolder}/Output/Results/y_boot.npy',y_boot)
+        np.save(f'{outfolder}/Output/Results/b_idx.npy',b_idx)
+        temp_txtfile = np.arange(0,n_straps,1).astype(str)
+        np.savetxt(f'{outfolder}/Output/Results/temp_txtfile.txt', temp_txtfile,fmt='%s')
         #___________________________________________________________________________________________________________________________________
         #parallel call 
         tstart = time()
         pcall = 'bash ' + params['pype_path'] + '/BagPype/scripts/bagpype_bash_parallel.sh %s' % batch
-        subprocess.check_call(pcall, shell=True); tend = time(); print('Time to run %s bootstraps: ' % n_straps, tend-tstart)
+        subprocess.check_call(pcall, shell=True)
+        tend = time()
+        print('Time to run %s bootstraps: ' % n_straps, tend-tstart)
         #___________________________________________________________________________________________________________________________________
         #Bagging 
-        csv_folder = f'{outfolder}/Output/Results/Boot/'; split = batch; data_frame_path = path
-        out_dir = f'{outfolder}/Output/Results/{batch}_Full_Subtypes.csv'; out_dir_stab = f'{outfolder}/Output/Results/{batch}_Full_Stab.csv'
+        csv_folder = f'{outfolder}/Output/Results/Boot/'
+        split = batch
+        data_frame_path = path
+        out_dir = f'{outfolder}/Output/Results/{batch}_Full_Subtypes.csv'
+        out_dir_stab = f'{outfolder}/Output/Results/{batch}_Full_Stab.csv'
         stab_full, Split_1, Q = bagging_adjacency_matrixes(csv_folder, split, data_frame_path, out_dir, out_dir_stab, subset, silo_metric)
         #___________________________________________________________________________________________________________________________________
 

@@ -1,7 +1,9 @@
 from bagpype_call import *
 
-i = sys.argv[1]; i = int(i) # Load boostrap number
-batch = sys.argv[2]; batch = np.str(batch) # load batch name
+i = sys.argv[1]
+i = int(i) # Load boostrap number
+batch = sys.argv[2]
+batch = np.str(batch) # load batch name
 batch_name = f'{batch}'
 batch_path = params['data_path']
 outfolder= batch_path+'/'+batch_name 
@@ -21,7 +23,7 @@ X_split = df.iloc[b_idx[i],:]
 print('Lacing up bootstrap #%d' % (i + 1))
 communities2, Q2 = pheno_clust(X=np.array(X_split[subset]), verbose=True, distance = louvain_metric, k=k)
 # silouette score
-score = silhouette_score(np.array(X_split[subset]), communities2, metric = silo_metric) 
+#score = silhouette_score(np.array(X_split[subset]), communities2, metric = silo_metric)
 
 data1 = np.hstack((y_boot[i].reshape(-1,1), communities2.reshape(-1,1)))
 res1 = pd.DataFrame(data=data1)
@@ -30,13 +32,15 @@ res1.to_csv(f'{outfolder}/Output/Results/Boot/%s_%s.csv' % (batch, i))
 for x in range(n_straps):
     for t in range(2):
         Q = np.array([Q2] * t)
-        Silo = np.array([score] * t)
+        #Silo = np.array([score] * t)
     
-data2 = np.hstack(Q.reshape(-1,1)); res2 = pd.DataFrame(data=data2)
+data2 = np.hstack(Q.reshape(-1,1))
+res2 = pd.DataFrame(data=data2)
 res2.to_csv(f'{outfolder}/Output/Results/Boot_Q/%s_%s.csv' % (batch, i))
              
-data3 = np.hstack(Silo.reshape(-1,1)); res3 = pd.DataFrame(data=data3)
-res3.to_csv(f'{outfolder}/Output/Results/Boot_Silo/%s_%s.csv' % (batch, i))
+#data3 = np.hstack(Silo.reshape(-1,1))
+#res3 = pd.DataFrame(data=data3)
+#res3.to_csv(f'{outfolder}/Output/Results/Boot_Silo/%s_%s.csv' % (batch, i))
 
 #______________________________________________________________________________________________________________________________________________________
 ### Beta testing for Variable Clusering ### 
