@@ -41,6 +41,6 @@ n_jobs: 15
 # if you want to manually pick k for knn manually enter a value. Leave blank for sturges formula. 
 k: 
 #----------------------------------------------------------------------------------------------------------#
-# if you want to manually pick resolution parameter 
+# if you want to manually pick resolution parameter. Leave blank for resolution parameter (limit) to equal 1.
 resolution_parameter: 
 #----------------------------------------------------------------------------------------------------------#
