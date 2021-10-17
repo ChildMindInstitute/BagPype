@@ -1,6 +1,7 @@
 # BagPype
 ----------
-Bagging Enhanced Network Analysis Clustering Pipeline\n
+Bagging Enhanced Network Analysis Clustering Pipeline
+
 Available network algorithms:
  - Leiden
  - Louvain
