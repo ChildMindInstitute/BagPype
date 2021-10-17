@@ -23,7 +23,7 @@ distance_metric: 'spearman'
 # silo_metric = sklearn.metrics.silhouette_score
 silo_metric: 'correlation'
 #----------------------------------------------------------------------------------------------------------#
-# ID: Subject ID
+# ID: Subject or Variable ID
 ID: 'node'
 #----------------------------------------------------------------------------------------------------------#
 # Boot: 
