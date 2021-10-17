@@ -1,26 +1,46 @@
-#<><><><><> BagPype Parameters Template <><><><><>#
+#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#
+#<><><><><><><><><><><><><><><><><><><> BagPype Parameter Template <><><><><><><><><><><><><><><><><><><><>#
+#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#
+
+#----------------------------------------------------------------------------------------------------------#
 # path to BagPype pipeline (no quotes)
-pype_path: /Users/Jacob/Desktop/Github
+pype_path: /home/jade6100/scripts/RSA_Networks/analysis
+#----------------------------------------------------------------------------------------------------------#
 # path to data (no quotes)
-data_path: /Users/Jacob/Desktop/GitHub/NVLD/Created_Data
-# Batch: name of data minus the .csv (keep in quotes) 
+data_path: /pl/active/banich/studies/wmem/fmri/mvpa2/operation_rsa/grp/leiden
+#----------------------------------------------------------------------------------------------------------#
+#Batch: name of data minus the .csv (keep in quotes) 
 # To run multiple datsets include dataset names in brackets and seperated by a comma(s)
-# example > batch: ['comb_parent_uk_nov_res', 'comb_parent_uk_nov_res'] 
-batch: ['nvld_cluster_data_2']
-# louvain_metric: distance metric -> options: spearman, euclid
-louvain_metric: 'spearman'
+# example - batch: ['dataset_name_1', 'dataset_name_2'] 
+batch: ['group_sm_vector_spearman_2']
+#----------------------------------------------------------------------------------------------------------#
+# alogorithm: 'leiden', 'louvain'
+algorithm: 'leiden'
+#----------------------------------------------------------------------------------------------------------#
+# louvain_metric: distance metric - options: 'spearman', 'euclidean'
+distance_metric: 'spearman'
+#----------------------------------------------------------------------------------------------------------#
 # silo_metric = sklearn.metrics.silhouette_score
 silo_metric: 'correlation'
+#----------------------------------------------------------------------------------------------------------#
 # ID: Subject ID
-ID: 'URSI'
+ID: 'node'
+#----------------------------------------------------------------------------------------------------------#
 # Boot: 
-# - 'Yes' > Runs bootstrapping version of louvain only
-# - 'No' > No bootstrapping and runs only once on full dataset
-# - 'Both' > Runs both bootstrapping and non-bootstrapping
-Boot: 'Both'
+# 'Yes' - Runs bootstrapping version of louvain only
+# 'No' - No bootstrapping and runs only once on full dataset
+# 'Both' - Runs both bootstrapping and non-bootstrapping
+Boot: 'Yes'
+#----------------------------------------------------------------------------------------------------------#
 # n_straps = number of bootstrapped samples (n_straps need to be 50 or higher)
-n_straps: 50
+n_straps: 100
+#----------------------------------------------------------------------------------------------------------#
 # parellel processing cors (use 1 for no parallel processing)
-cors: 4
-# if you want to manually pick k for knn manually enter a value. Leave blank for the standard version. 
+n_jobs: 15
+#----------------------------------------------------------------------------------------------------------#
+# if you want to manually pick k for knn manually enter a value. Leave blank for sturges formula. 
 k: 
+#----------------------------------------------------------------------------------------------------------#
+# if you want to manually pick resolution parameter 
+resolution_parameter: 
+#----------------------------------------------------------------------------------------------------------#
