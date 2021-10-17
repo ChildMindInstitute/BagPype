@@ -17,4 +17,5 @@ Directions
 Example
 ----------
 $cd /path_to_BagPype/BagPype/scripts
+
 $python3 bagpype_run.py
