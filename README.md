@@ -1,5 +1,6 @@
 # BagPype
-Bagging Enhanced Network Analysis Clustering Pipeline
+----------
+Bagging Enhanced Network Analysis Clustering Pipeline\n
 Available network algorithms:
  - Leiden
  - Louvain
@@ -12,6 +13,7 @@ Directions
 4) Set directory to the BagPype scripts folder that houses the pipeline 
 5) Execute bagype_run.py 
 
-Example: 
+Example
+----------
 $cd /path_to_BagPype/BagPype/scripts
 $python3 bagpype_run.py
