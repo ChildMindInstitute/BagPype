@@ -2,8 +2,7 @@
 ----------
 Bagging Enhanced Network Analysis Clustering Pipeline
 
-Featured in: 
-
+As Featured in: 
 Nikolaidis, A., Paksarian, D., Alexander, L. et al. The Coronavirus Health and Impact Survey (CRISIS) reveals reproducible correlates of pandemic-related mood states across the Atlantic. Sci Rep 11, 8139 (2021). https://doi.org/10.1038/s41598-021-87270-3
 
 Available network algorithms:
