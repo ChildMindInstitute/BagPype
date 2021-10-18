@@ -14,7 +14,7 @@ data_path: /path_to_data
 # example - batch: ['dataset_name_1', 'dataset_name_2'] 
 batch: ['dataset_name_1']
 #----------------------------------------------------------------------------------------------------------#
-# algorithm: 'leiden', 'louvain'
+# algorithm: - options: 'leiden', 'louvain'
 algorithm: 'leiden'
 #----------------------------------------------------------------------------------------------------------#
 # louvain_metric: distance metric - options: 'spearman', 'euclidean'
