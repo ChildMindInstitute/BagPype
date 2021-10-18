@@ -4,15 +4,15 @@
 
 #----------------------------------------------------------------------------------------------------------#
 # path to BagPype pipeline (no quotes)
-pype_path: /home/jade6100/scripts/RSA_Networks/analysis
+pype_path: /path_to_bagpype_folder/scripts
 #----------------------------------------------------------------------------------------------------------#
 # path to data (no quotes)
-data_path: /pl/active/banich/studies/wmem/fmri/mvpa2/operation_rsa/grp/leiden
+data_path: /path_to_data
 #----------------------------------------------------------------------------------------------------------#
 #Batch: name of data minus the .csv (keep in quotes) 
 # To run multiple datsets include dataset names in brackets and seperated by a comma(s)
 # example - batch: ['dataset_name_1', 'dataset_name_2'] 
-batch: ['group_sm_vector_spearman_2']
+batch: ['dataset_name_1']
 #----------------------------------------------------------------------------------------------------------#
 # alogorithm: 'leiden', 'louvain'
 algorithm: 'leiden'
